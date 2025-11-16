@@ -33,7 +33,9 @@ export default function FlashcardGame() {
   useEffect(() => {
     if (!category) return;
     const fetchVocab = async () => {
-      const snap = await getDocs(collection(db, "vocab", category, "vocab"));
+      if (!category) return;
+      const cat = Array.isArray(category) ? category[0] : category;
+      const snap = await getDocs(collection(db, "vocab", cat, "vocab"));        
       const list = snap.docs.map((doc) => doc.data() as Vocab);
       setOriginalList(list);
       setVocabList(shuffleArray(list));
@@ -110,7 +112,7 @@ export default function FlashcardGame() {
     const accuracy = total ? Math.round((stats.remember / total) * 100) : 0;
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 flex flex-col items-center justify-center p-8 space-y-6 relative">
+      <div className="min-h-screen bg-linear-to-br from-pink-50 via-purple-50 to-blue-50 flex flex-col items-center justify-center p-8 space-y-6 relative">
         {/* Back button */}
         <button
           onClick={() => router.push("/")}
@@ -170,7 +172,7 @@ export default function FlashcardGame() {
   const currentVocab = vocabList[index];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 flex items-center justify-center p-8 relative">
+    <div className="min-h-screen bg-linear-to-br from-pink-50 via-purple-50 to-blue-50 flex items-center justify-center p-8 relative">
       {/* Back button */}
       <button
         onClick={() => router.push("/")}
