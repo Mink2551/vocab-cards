@@ -24,7 +24,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-linear-to-br from-pink-50 via-purple-50 to-blue-50 p-8">
       <h1 className="text-4xl font-bold text-center mb-8 text-purple-600">📚 Vocab Categories</h1>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-6">
         {categories.map((cat) => (
           <div
             key={cat}
