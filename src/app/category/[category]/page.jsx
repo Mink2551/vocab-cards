@@ -110,10 +110,7 @@ export default function FlashcardGame() {
     const accuracy = total ? Math.round((stats.remember / total) * 100) : 0;
 
     return (
-      <div
-        className="min-h-screen bg-linear-to-br from-pink-50 via-purple-50 to-blue-50 flex items-center justify-center p-8 relative"
-        style={{ touchAction: "none" }}
-      >
+      <div className="min-h-screen bg-linear-to-br from-pink-50 via-purple-50 to-blue-50 flex flex-col items-center justify-center p-8 space-y-6 relative">
         <button
           onClick={() => router.push("/")}
           className="absolute top-4 left-4 px-3 py-1 bg-purple-500 text-white rounded hover:bg-purple-600"
@@ -191,12 +188,10 @@ export default function FlashcardGame() {
 
       <animated.div
         {...bind()}
-        style={{
-          x: spring.x,
-          y: spring.y,
-          scale: spring.scale,
-        }}
-        className="w-80 h-60 ..."
+        style={{ x: spring.x, y: spring.y, scale: spring.scale }}
+        className={`w-80 h-60 cursor-grab rounded-xl shadow-2xl flex items-center justify-center ${
+          showMeaning ? "bg-purple-300" : "bg-white"
+        } duration-100 text-3xl font-bold text-gray-800 select-none relative`}
       >
         {showMeaning ? currentVocab.meaning : currentVocab.vocab}
       </animated.div>
