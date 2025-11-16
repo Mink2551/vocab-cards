@@ -32,17 +32,17 @@ export default function FlashcardGame() {
 
   useEffect(() => {
     if (!category) return;
+    const cat = Array.isArray(category) ? category[0] : category; // <-- fix here
+  
     const fetchVocab = async () => {
-      if (!category) return;
-      const cat = Array.isArray(category) ? category[0] : category;
-      const snap = await getDocs(collection(db, "vocab", cat, "vocab"));        
+      const snap = await getDocs(collection(db, "vocab", cat, "vocab"));
       const list = snap.docs.map((doc) => doc.data() as Vocab);
       setOriginalList(list);
       setVocabList(shuffleArray(list));
       setLoading(false);
     };
     fetchVocab();
-  }, [category]);
+  }, [category]);  
 
   const startGame = (list: Vocab[]) => {
     setVocabList(shuffleArray(list));
