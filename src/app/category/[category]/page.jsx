@@ -7,44 +7,42 @@ import { useParams, useRouter } from "next/navigation";
 import { useDrag } from "@use-gesture/react";
 import { animated, useSpring } from "@react-spring/web";
 
-type Vocab = { vocab: string; meaning: string };
-
 export default function FlashcardGame() {
   const params = useParams();
   const router = useRouter();
   const category = params.category;
 
-  const [vocabList, setVocabList] = useState<Vocab[]>([]);
-  const [originalList, setOriginalList] = useState<Vocab[]>([]);
+  const [vocabList, setVocabList] = useState([]);
+  const [originalList, setOriginalList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [index, setIndex] = useState(0);
   const [stats, setStats] = useState({ remember: 0, learning: 0 });
   const [showMeaning, setShowMeaning] = useState(false);
-  const [swipeDirection, setSwipeDirection] = useState<"left" | "right" | null>(null);
-  const [incorrectVocab, setIncorrectVocab] = useState<Vocab[]>([]);
+  const [swipeDirection, setSwipeDirection] = useState(null);
+  const [incorrectVocab, setIncorrectVocab] = useState([]);
   const [reviewing, setReviewing] = useState(false);
 
   const [spring, api] = useSpring(() => ({ x: 0, y: 0, scale: 1 }));
 
-  const shuffleArray = (array: Vocab[]) => {
+  const shuffleArray = (array) => {
     return [...array].sort(() => Math.random() - 0.5);
   };
 
   useEffect(() => {
     if (!category) return;
-    const cat = Array.isArray(category) ? category[0] : category; // <-- fix here
-  
+    const cat = Array.isArray(category) ? category[0] : category;
+
     const fetchVocab = async () => {
       const snap = await getDocs(collection(db, "vocab", cat, "vocab"));
-      const list = snap.docs.map((doc) => doc.data() as Vocab);
+      const list = snap.docs.map((doc) => doc.data());
       setOriginalList(list);
       setVocabList(shuffleArray(list));
       setLoading(false);
     };
     fetchVocab();
-  }, [category]);  
+  }, [category]);
 
-  const startGame = (list: Vocab[]) => {
+  const startGame = (list) => {
     setVocabList(shuffleArray(list));
     setIndex(0);
     setStats({ remember: 0, learning: 0 });
@@ -62,7 +60,7 @@ export default function FlashcardGame() {
     api.start({ x: 0, y: 0, scale: 1 });
   };
 
-  const handleSwipeEnd = (mx: number) => {
+  const handleSwipeEnd = (mx) => {
     if (mx > 100) {
       setStats((s) => ({ ...s, remember: s.remember + 1 }));
       nextCard();
@@ -113,7 +111,6 @@ export default function FlashcardGame() {
 
     return (
       <div className="min-h-screen bg-linear-to-br from-pink-50 via-purple-50 to-blue-50 flex flex-col items-center justify-center p-8 space-y-6 relative">
-        {/* Back button */}
         <button
           onClick={() => router.push("/")}
           className="absolute top-4 left-4 px-3 py-1 bg-purple-500 text-white rounded hover:bg-purple-600"
@@ -169,11 +166,10 @@ export default function FlashcardGame() {
     );
   }
 
-  const currentVocab = vocabList[index]; 
+  const currentVocab = vocabList[index];
 
   return (
     <div className="min-h-screen bg-linear-to-br from-pink-50 via-purple-50 to-blue-50 flex items-center justify-center p-8 relative">
-      {/* Back button */}
       <button
         onClick={() => router.push("/")}
         className="absolute top-4 left-4 px-3 py-1 bg-purple-500 text-white rounded hover:bg-purple-600 z-10"
@@ -181,7 +177,6 @@ export default function FlashcardGame() {
         Back
       </button>
 
-      {/* Swipe feedback overlay */}
       {swipeDirection && (
         <div
           className={`absolute w-80 h-60 rounded-xl flex items-center justify-center text-2xl font-bold text-white select-none pointer-events-none
@@ -191,7 +186,6 @@ export default function FlashcardGame() {
         </div>
       )}
 
-      {/* Card */}
       <animated.div
         {...bind()}
         style={{ x: spring.x, y: spring.y, scale: spring.scale }}
@@ -202,7 +196,6 @@ export default function FlashcardGame() {
         {showMeaning ? currentVocab.meaning : currentVocab.vocab}
       </animated.div>
 
-      {/* Progress */}
       <div className="absolute top-4 right-4 text-gray-700 font-semibold">
         {index + 1}/{vocabList.length}
       </div>
